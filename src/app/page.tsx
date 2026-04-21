@@ -68,12 +68,12 @@ export default function LandingPage() {
             }}
             className="fixed inset-0 z-[200] bg-[#0a0a0a] flex items-center justify-center pointer-events-none"
           >
-            <div className="relative flex flex-col items-center overflow-hidden">
+            <div className="flex flex-col items-center gap-4 overflow-hidden py-10">
                <motion.span
                  initial={{ y: 100, opacity: 0 }}
                  animate={{ 
-                   y: [100, 0, 0, -100], 
-                   opacity: [0, 1, 1, 0] 
+                   y: [100, 0, 0, -10], 
+                   opacity: [0, 1, 1, 0.5] 
                  }}
                  transition={{ 
                    duration: 4, 
@@ -86,17 +86,17 @@ export default function LandingPage() {
                </motion.span>
                
                <motion.div
-                 initial={{ scale: 0.8, opacity: 0 }}
+                 initial={{ y: 20, opacity: 0 }}
                  animate={{ 
-                   scale: [0.8, 1, 1], 
-                   opacity: [0, 0, 1, 0] 
+                   y: [20, 0, 0], 
+                   opacity: [0, 0, 1] 
                  }}
                  transition={{ 
                    duration: 4, 
-                   times: [0, 0.4, 0.6, 1],
+                   times: [0, 0.4, 0.6],
                    ease: "easeOut"
                  }}
-                 className="absolute inset-0 flex items-center justify-center"
+                 className="flex items-center justify-center"
                >
                  <span className="text-[10px] font-black uppercase tracking-[1em] text-white/40">
                    LPF Studio
@@ -107,7 +107,7 @@ export default function LandingPage() {
                  initial={{ width: 0 }}
                  animate={{ width: "100%" }}
                  transition={{ duration: 3.5, ease: "linear" }}
-                 className="absolute bottom-[-20px] left-0 h-[1px] bg-white/20"
+                 className="absolute bottom-0 left-0 h-[1px] bg-white/20"
                />
             </div>
           </motion.div>
