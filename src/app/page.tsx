@@ -240,16 +240,6 @@ export default function LandingPage() {
           className="relative z-10 w-full px-10 md:px-20"
         >
           <div className="max-w-7xl mx-auto flex flex-col items-start gap-12">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 }}
-              className="flex items-center gap-4"
-            >
-              <div className="h-px w-20 bg-white/40"></div>
-              <span className="text-[10px] font-bold uppercase tracking-[0.6em] text-white/60 italic">Studio de LPF</span>
-            </motion.div>
-
             <motion.h1 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
