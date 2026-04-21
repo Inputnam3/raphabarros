@@ -292,17 +292,17 @@ export default function LandingPage() {
                 &quot;O ano de 2026 marca a decisão de não apenas existir, mas de ocupar seu espaço com autoridade e vitalidade.&quot;
               </p>
             </div>
-            <div className="lg:col-span-7">
+            <div className="lg:col-span-7 flex justify-center lg:justify-end">
               <motion.div 
                  initial={{ y: 100, opacity: 0 }}
                  whileInView={{ y: 0, opacity: 1 }}
-                 className="relative aspect-[4/5] md:aspect-[16/10] overflow-hidden rounded-editorial shadow-2xl border border-white/5"
+                 className="relative aspect-[2/3] w-full max-w-[500px] overflow-hidden rounded-editorial shadow-2xl border border-white/5"
               >
                 <Image 
                   src="/bem-vindo-2026.jpg" 
                   alt="Bem-vindo 2026" 
                   fill 
-                  className="object-cover grayscale-[0.2] hover:scale-105 transition-transform duration-1000"
+                  className="object-cover grayscale-[0.2] hover:scale-105 transition-transform duration-1000 object-top"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-60"></div>
               </motion.div>
