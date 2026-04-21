@@ -296,7 +296,7 @@ export default function LandingPage() {
               <motion.div 
                  initial={{ y: 100, opacity: 0 }}
                  whileInView={{ y: 0, opacity: 1 }}
-                 className="relative aspect-[2/3] w-full max-w-[500px] overflow-hidden rounded-editorial shadow-2xl border border-white/5"
+                 className="relative aspect-video lg:aspect-[2/3] w-full max-w-[500px] overflow-hidden rounded-editorial shadow-2xl border border-white/5"
               >
                 <Image 
                   src="/bem-vindo-2026.jpg" 
