@@ -29,6 +29,11 @@ export default function LandingPage() {
     return () => clearTimeout(timer);
   }, []);
 
+  const { scrollYProgress, scrollY } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
   // Navbar Logic: Hide on scroll down, Show on scroll up
   React.useEffect(() => {
     return scrollY.on("change", (current) => {
@@ -43,11 +48,6 @@ export default function LandingPage() {
       setLastScrollY(current);
     });
   }, [scrollY, lastScrollY]);
-
-  const { scrollYProgress, scrollY } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
 
   const videoOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.3]);
   const videoScale = useTransform(scrollYProgress, [0, 0.2], [1, 1.05]);

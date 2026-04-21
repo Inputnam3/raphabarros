@@ -14,9 +14,7 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
-  experimental: {
-    turbopack: {},
-  },
+  turbopack: {}, // Chave correta para silenciar o aviso no Next.js 16
   images: {
     remotePatterns: [
       {
