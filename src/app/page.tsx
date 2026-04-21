@@ -5,11 +5,13 @@ import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Play, Menu, Activity, ShieldCheck, Zap, Heart, Sparkles, ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { AnimatePresence } from "framer-motion";
 
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isNavVisible, setIsNavVisible] = React.useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const [showSplash, setShowSplash] = React.useState(true);
   const [lastScrollY, setLastScrollY] = React.useState(0);
 
   const navLinks = [
@@ -19,10 +21,13 @@ export default function LandingPage() {
     { name: "Depoimentos", href: "/depoimentos" },
   ];
 
-  const { scrollYProgress, scrollY } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
+  // Splash Screen Timer
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false);
+    }, 4500); // 4.5 segundos de pura imersão
+    return () => clearTimeout(timer);
+  }, []);
 
   // Navbar Logic: Hide on scroll down, Show on scroll up
   React.useEffect(() => {
@@ -39,12 +44,76 @@ export default function LandingPage() {
     });
   }, [scrollY, lastScrollY]);
 
+  const { scrollYProgress, scrollY } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
   const videoOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.3]);
   const videoScale = useTransform(scrollYProgress, [0, 0.2], [1, 1.05]);
   const heroTextY = useTransform(scrollYProgress, [0, 0.2], [0, -100]);
 
   return (
     <div ref={containerRef} className="relative bg-[#0a0a0a] text-white">
+      
+      <AnimatePresence>
+        {showSplash && (
+          <motion.div
+            key="splash"
+            initial={{ opacity: 1 }}
+            exit={{ 
+              opacity: 0,
+              filter: "blur(20px)",
+              transition: { duration: 1.5, ease: "easeInOut" }
+            }}
+            className="fixed inset-0 z-[200] bg-[#0a0a0a] flex items-center justify-center pointer-events-none"
+          >
+            <div className="relative flex flex-col items-center overflow-hidden">
+               <motion.span
+                 initial={{ y: 100, opacity: 0 }}
+                 animate={{ 
+                   y: [100, 0, 0, -100], 
+                   opacity: [0, 1, 1, 0] 
+                 }}
+                 transition={{ 
+                   duration: 4, 
+                   times: [0, 0.2, 0.8, 1],
+                   ease: "easeInOut"
+                 }}
+                 className="text-4xl md:text-7xl font-serif italic tracking-tighter"
+               >
+                 Raphaela Barros
+               </motion.span>
+               
+               <motion.div
+                 initial={{ scale: 0.8, opacity: 0 }}
+                 animate={{ 
+                   scale: [0.8, 1, 1], 
+                   opacity: [0, 0, 1, 0] 
+                 }}
+                 transition={{ 
+                   duration: 4, 
+                   times: [0, 0.4, 0.6, 1],
+                   ease: "easeOut"
+                 }}
+                 className="absolute inset-0 flex items-center justify-center"
+               >
+                 <span className="text-[10px] font-black uppercase tracking-[1em] text-white/40">
+                   LPF Studio
+                 </span>
+               </motion.div>
+
+               <motion.div 
+                 initial={{ width: 0 }}
+                 animate={{ width: "100%" }}
+                 transition={{ duration: 3.5, ease: "linear" }}
+                 className="absolute bottom-[-20px] left-0 h-[1px] bg-white/20"
+               />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Smart Navbar */}
       <motion.nav 
         animate={{ y: isNavVisible ? 0 : -120, opacity: isNavVisible ? 1 : 0 }}
