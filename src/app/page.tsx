@@ -21,11 +21,19 @@ export default function LandingPage() {
     { name: "Depoimentos", href: "/depoimentos" },
   ];
 
+  const videoRef = useRef<HTMLVideoElement>(null);
+
   // Splash Screen Timer
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setShowSplash(false);
-    }, 4500); // 4.5 segundos de pura imersão
+      // Forçar play quando a splash sai
+      if (videoRef.current) {
+        videoRef.current.play().catch(error => {
+          console.log("Autoplay prevent: ", error);
+        });
+      }
+    }, 4500); 
     return () => clearTimeout(timer);
   }, []);
 
@@ -224,10 +232,12 @@ export default function LandingPage() {
           className="absolute inset-0 z-0"
         >
           <video 
+            ref={videoRef}
             autoPlay 
             muted 
             loop 
             playsInline
+            preload="auto"
             className="w-full h-full object-cover grayscale-[0.3] contrast-[1.1] brightness-[0.7]"
           >
             <source src="/hero-video.mp4" type="video/mp4" />
