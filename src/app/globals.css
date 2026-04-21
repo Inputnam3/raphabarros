@@ -1,26 +1,57 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-serif: var(--font-bodoni);
+  --font-sans: var(--font-inter);
+
+  --color-brand-accent: #ffffff;
+  --color-brand-muted: #666666;
+  --color-brand-bg: #0a0a0a;
+
+  --radius-editorial: 0.5rem; /* Menos arredondado, mais brutal/chique */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer utilities {
+  .text-stroke {
+    -webkit-text-stroke: 0.5px rgba(255,255,255,0.4);
+    color: transparent;
   }
+  .text-stroke-thick {
+    -webkit-text-stroke: 1.5px rgba(255,255,255,0.8);
+    color: transparent;
+  }
+  .glass-dark {
+    background: rgba(10, 10, 10, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .reveal-text {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+  }
+}
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #ffffff;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .font-serif {
+  font-family: var(--font-bodoni), serif;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
+/* Hide Scrollbar */
+::-webkit-scrollbar {
+  display: none;
+}
+* {
+  scrollbar-width: none;
 }
