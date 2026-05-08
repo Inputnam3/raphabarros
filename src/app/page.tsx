@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Play, Menu, Activity, ShieldCheck, Zap, Heart, Sparkles, ChevronDown } from "lucide-react";
+import { ArrowRight, Play, Menu, Activity, ShieldCheck, Zap, Heart, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { AnimatePresence } from "framer-motion";
 
@@ -23,18 +23,35 @@ export default function LandingPage() {
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Splash Screen Timer
+  // Split text for cinematic animation
+  const name = "Raphaela Barros";
+  const letters = name.split("");
+
+  // Splash Screen Timer with Session Persistence
   React.useEffect(() => {
-    const timer = setTimeout(() => {
+    const splashShown = sessionStorage.getItem("splashShown");
+
+    if (!splashShown) {
+      setShowSplash(true);
+      const timer = setTimeout(() => {
+        setShowSplash(false);
+        sessionStorage.setItem("splashShown", "true");
+        if (videoRef.current) {
+          videoRef.current.play().catch(error => {
+            console.log("Autoplay prevent: ", error);
+          });
+        }
+      }, 4500); 
+      return () => clearTimeout(timer);
+    } else {
       setShowSplash(false);
-      // Forçar play quando a splash sai
+      // Ensure video plays if splash is skipped
       if (videoRef.current) {
         videoRef.current.play().catch(error => {
           console.log("Autoplay prevent: ", error);
         });
       }
-    }, 4500); 
-    return () => clearTimeout(timer);
+    }
   }, []);
 
   const { scrollYProgress, scrollY } = useScroll({
@@ -71,52 +88,62 @@ export default function LandingPage() {
             initial={{ opacity: 1 }}
             exit={{ 
               opacity: 0,
-              filter: "blur(20px)",
-              transition: { duration: 1.5, ease: "easeInOut" }
+              scale: 1.1,
+              filter: "blur(40px)",
+              transition: { duration: 1.5, ease: [0.22, 1, 0.36, 1] }
             }}
-            className="fixed inset-0 z-[200] bg-[#0a0a0a] flex items-center justify-center pointer-events-none"
+            className="fixed inset-0 z-[200] bg-[#0a0a0a] flex items-center justify-center pointer-events-none overflow-hidden"
           >
-            <div className="flex flex-col items-center gap-4 overflow-hidden py-10">
-               <motion.span
-                 initial={{ y: 100, opacity: 0 }}
-                 animate={{ 
-                   y: [100, 0, 0, -10], 
-                   opacity: [0, 1, 1, 0.5] 
-                 }}
-                 transition={{ 
-                   duration: 4, 
-                   times: [0, 0.2, 0.8, 1],
-                   ease: "easeInOut"
-                 }}
-                 className="text-4xl md:text-7xl font-serif italic tracking-tighter"
-               >
-                 Raphaela Barros
-               </motion.span>
+            {/* Cinematic Background Glow */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: [0, 0.15, 0.1], scale: [0.8, 1.2, 1.1] }}
+              transition={{ duration: 4, ease: "easeOut" }}
+              className="absolute w-[80vw] h-[80vw] bg-white/10 rounded-full blur-[120px]"
+            />
+
+            <div className="flex flex-col items-center gap-12 relative z-10">
+               <div className="flex overflow-hidden">
+                 {letters.map((char, i) => (
+                   <motion.span
+                     key={i}
+                     initial={{ y: 100, opacity: 0, filter: "blur(10px)" }}
+                     animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                     transition={{ 
+                       duration: 1.2, 
+                       delay: i * 0.05 + 0.5,
+                       ease: [0.22, 1, 0.36, 1]
+                     }}
+                     className={`text-4xl md:text-8xl font-serif italic tracking-tighter ${char === " " ? "mr-4 md:mr-8" : ""}`}
+                   >
+                     {char}
+                   </motion.span>
+                 ))}
+               </div>
                
                <motion.div
-                 initial={{ y: 20, opacity: 0 }}
-                 animate={{ 
-                   y: [20, 0, 0], 
-                   opacity: [0, 0, 1] 
-                 }}
+                 initial={{ opacity: 0, letterSpacing: "0.2em" }}
+                 animate={{ opacity: 1, letterSpacing: "1em" }}
                  transition={{ 
-                   duration: 4, 
-                   times: [0, 0.4, 0.6],
+                   duration: 2.5, 
+                   delay: 1.5,
                    ease: "easeOut"
                  }}
                  className="flex items-center justify-center"
                >
-                 <span className="text-[10px] font-black uppercase tracking-[1em] text-white/40">
+                 <span className="text-[10px] font-black uppercase text-white/40">
                    LPF Studio
                  </span>
                </motion.div>
 
-               <motion.div 
-                 initial={{ width: 0 }}
-                 animate={{ width: "100%" }}
-                 transition={{ duration: 3.5, ease: "linear" }}
-                 className="absolute bottom-0 left-0 h-[1px] bg-white/20"
-               />
+               <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-32 h-[1px] bg-white/5 overflow-hidden">
+                 <motion.div 
+                   initial={{ x: "-100%" }}
+                   animate={{ x: "100%" }}
+                   transition={{ duration: 3, delay: 0.5, ease: "easeInOut" }}
+                   className="w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                 />
+               </div>
             </div>
           </motion.div>
         )}
@@ -126,34 +153,49 @@ export default function LandingPage() {
       <motion.nav 
         animate={{ y: isNavVisible ? 0 : -120, opacity: isNavVisible ? 1 : 0 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed top-0 left-0 w-full z-[100] flex justify-between items-center px-10 md:px-20 h-28 pointer-events-none"
+        className="fixed top-0 left-0 w-full z-[100] grid grid-cols-3 items-center px-6 md:px-20 h-28 pointer-events-none"
       >
-        <div className="pointer-events-auto flex flex-col leading-none">
-          <span className="text-3xl md:text-4xl font-serif italic tracking-tighter cursor-pointer hover:opacity-70 transition-opacity">Raphaela Barros</span>
-          <span className="text-[9px] font-bold uppercase tracking-[0.5em] text-white/40 ml-1">LPF Studio</span>
-        </div>
-        
-        <div className="hidden lg:flex items-center gap-12 pointer-events-auto">
-          {navLinks.map((item) => (
-            <Link 
-              key={item.name} 
-              href={item.href}
-              className="text-[10px] font-black uppercase tracking-[0.3em] opacity-50 hover:opacity-100 hover:text-white transition-all"
-            >
-              {item.name}
-            </Link>
-          ))}
+        <div className="flex items-center pointer-events-auto">
+          <div className="hidden lg:flex items-center gap-8">
+            {navLinks.slice(0, 2).map((item) => (
+              <Link 
+                key={item.name} 
+                href={item.href}
+                className="text-[9px] font-black uppercase tracking-[0.3em] opacity-50 hover:opacity-100 hover:text-white transition-all"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
         </div>
 
-        <div className="flex items-center gap-6 pointer-events-auto">
-          <Link href="/login" className="hidden sm:block text-[10px] font-black uppercase tracking-[0.3em] bg-white text-black px-8 py-3 rounded-full hover:bg-white/90 transition-all">
+        <div className="flex flex-col items-center leading-none pointer-events-auto">
+          <Link href="/" className="flex flex-col items-center group">
+            <span className="text-3xl font-serif italic tracking-tighter group-hover:opacity-70 transition-opacity whitespace-nowrap">Raphaela Barros</span>
+            <span className="text-[8px] font-bold uppercase tracking-[0.5em] text-white/40 mt-1">LPF Studio</span>
+          </Link>
+        </div>
+        
+        <div className="flex items-center justify-end gap-6 md:gap-8 pointer-events-auto">
+          <div className="hidden lg:flex items-center gap-8">
+            {navLinks.slice(2).map((item) => (
+              <Link 
+                key={item.name} 
+                href={item.href}
+                className="text-[9px] font-black uppercase tracking-[0.3em] opacity-50 hover:opacity-100 hover:text-white transition-all"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+          <Link href="/login" className="hidden sm:block text-[9px] font-black uppercase tracking-[0.3em] bg-white text-black px-6 py-2.5 rounded-full hover:bg-white/90 transition-all">
             Área Pro
           </Link>
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="w-14 h-14 flex items-center justify-center rounded-full border border-white/10 glass-dark hover:border-white/40 transition-all group relative z-[110]"
+            className="flex items-center justify-center p-2 transition-all group relative z-[110]"
           >
-            <Menu size={22} className={`group-hover:scale-110 transition-transform ${isMobileMenuOpen ? 'rotate-90' : ''}`} />
+            <Menu size={24} className={`group-hover:scale-110 transition-transform ${isMobileMenuOpen ? 'rotate-90' : ''}`} />
           </button>
         </div>
       </motion.nav>
@@ -167,11 +209,11 @@ export default function LandingPage() {
             : "circle(0% at 90% 5%)" 
         }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed inset-0 bg-[#0a0a0a] z-[105] flex flex-col justify-center px-10 md:px-20"
+        className="fixed inset-0 bg-[#0a0a0a] z-[105] flex flex-col justify-center px-6 md:px-20"
       >
-        <div className="space-y-8">
+        <div className="space-y-6 md:space-y-8">
           <span className="text-[10px] font-bold uppercase tracking-[0.6em] text-white/20 italic">Navegação</span>
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4 md:gap-6">
             {navLinks.map((item, i) => (
               <motion.div
                 key={item.name}
@@ -182,7 +224,7 @@ export default function LandingPage() {
                 <Link 
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-6xl md:text-8xl font-serif italic tracking-tighter hover:text-stroke transition-all"
+                  className="text-5xl md:text-8xl font-serif italic tracking-tighter hover:text-stroke transition-all"
                 >
                   {item.name}
                 </Link>
@@ -194,7 +236,7 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: isMobileMenuOpen ? 1 : 0 }}
             transition={{ delay: 0.8 }}
-            className="pt-10 flex flex-col gap-8"
+            className="pt-6 md:pt-10 flex flex-col gap-6 md:gap-8"
           >
              <Link 
                 href="/login"
@@ -226,10 +268,10 @@ export default function LandingPage() {
       </motion.div>
 
       {/* Hero: Immersive Video Reveal */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative h-screen flex items-center justify-center overflow-hidden px-6 md:px-20">
         <motion.div 
           style={{ opacity: videoOpacity, scale: videoScale }}
-          className="absolute inset-0 z-0"
+          className="absolute inset-0 z-0 bg-[#0a0a0a]"
         >
           <video 
             ref={videoRef}
@@ -247,14 +289,14 @@ export default function LandingPage() {
 
         <motion.div 
           style={{ y: heroTextY }}
-          className="relative z-10 w-full px-10 md:px-20"
+          className="relative z-10 w-full"
         >
-          <div className="max-w-7xl mx-auto flex flex-col items-start gap-12">
+          <div className="max-w-7xl mx-auto flex flex-col items-start gap-8 md:gap-12">
             <motion.h1 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-              className="text-8xl md:text-[16rem] font-serif leading-[0.75] tracking-tighter"
+              className="text-6xl sm:text-7xl md:text-[16rem] font-serif leading-[0.8] md:leading-[0.75] tracking-tighter"
             >
               Respira, <br />
               <span className="italic font-extralight text-stroke-thick">Mulher</span>
@@ -264,12 +306,12 @@ export default function LandingPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.2 }}
-              className="flex flex-col md:flex-row items-end gap-16 w-full justify-between"
+              className="flex flex-col md:flex-row items-start md:items-end gap-8 md:gap-16 w-full justify-between"
             >
-              <p className="text-xl md:text-2xl font-serif italic text-white/70 max-w-md leading-relaxed">
+              <p className="text-lg md:text-2xl font-serif italic text-white/70 max-w-md leading-relaxed">
                 A reconexão profunda com seu core através de um método que une ciência, estética e o poder da sua respiração.
               </p>
-              <div className="flex flex-col items-center gap-4">
+              <div className="hidden md:flex flex-col items-center gap-4">
                  <div className="w-px h-24 bg-gradient-to-b from-white to-transparent opacity-20"></div>
                  <span className="text-[10px] font-bold uppercase tracking-[0.4em] opacity-40">Desça para explorar</span>
               </div>
@@ -279,22 +321,22 @@ export default function LandingPage() {
       </section>
 
       {/* Methodology Section: The Premium Offer */}
-      <section className="relative z-20 py-40 px-10 md:px-20 bg-[#0a0a0a] overflow-hidden">
+      <section className="relative z-20 py-24 md:py-40 px-6 md:px-20 bg-[#0a0a0a] overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
            <Image src="/bg-blossoms.png" alt="Texture" fill className="object-cover blur-[2px] opacity-10" />
         </div>
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-24 relative z-10">
-          <div className="lg:col-span-6 flex flex-col justify-center space-y-12">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 md:gap-24 relative z-10">
+          <div className="lg:col-span-6 flex flex-col justify-center space-y-8 md:space-y-12">
             <div className="space-y-4">
               <span className="text-white/40 font-black text-[10px] uppercase tracking-[0.5em]">The Methodology</span>
-              <h2 className="text-7xl md:text-9xl font-serif italic leading-[0.8] tracking-tighter">Ciência em <br /> <span className="not-italic font-black text-stroke">Movimento</span></h2>
+              <h2 className="text-5xl sm:text-6xl md:text-9xl font-serif italic leading-[0.9] md:leading-[0.8] tracking-tighter">Ciência em <br /> <span className="not-italic font-black text-stroke">Movimento</span></h2>
             </div>
             
-            <div className="space-y-8 text-lg text-white/60 font-light leading-relaxed">
+            <div className="space-y-6 md:space-y-8 text-base md:text-lg text-white/60 font-light leading-relaxed">
               <p>
                 O Método Raphaela Barros não é apenas uma sequência de vídeos. É uma jornada guiada de **Reabilitação Funcional** e **Estética Abdominal**, focada em resultados que você sente no primeiro ciclo.
               </p>
-              <ul className="space-y-6 pt-4">
+              <ul className="space-y-4 md:space-y-6 pt-2 md:pt-4">
                 {[
                   { title: "Protocolo Diário em Vídeo", desc: "Aulas práticas de alta definição com foco em técnica e consciência." },
                   { title: "Mentoria de Resultados", desc: "Acompanhamento da evolução de medidas e marcos posturais." },
@@ -305,20 +347,20 @@ export default function LandingPage() {
                     initial={{ opacity: 0, x: -10 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.2 }}
-                    className="flex gap-6 items-start"
+                    className="flex gap-4 md:gap-6 items-start"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-white mt-3 shrink-0" />
                     <div>
-                      <h4 className="text-white font-bold text-sm uppercase tracking-widest mb-1">{item.title}</h4>
-                      <p className="text-sm opacity-60">{item.desc}</p>
+                      <h4 className="text-white font-bold text-xs md:text-sm uppercase tracking-widest mb-1">{item.title}</h4>
+                      <p className="text-xs md:text-sm opacity-60">{item.desc}</p>
                     </div>
                   </motion.li>
                 ))}
               </ul>
             </div>
 
-            <div className="pt-10">
-              <button className="bg-white text-black px-12 py-6 rounded-full text-xs font-black uppercase tracking-[0.3em] shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:scale-105 active:scale-95 transition-all flex items-center gap-4">
+            <div className="pt-6 md:pt-10">
+              <button className="bg-white text-black px-8 md:px-12 py-5 md:py-6 rounded-full text-[10px] md:text-xs font-black uppercase tracking-[0.3em] shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-4 w-full sm:w-fit">
                 Quero Acesso Premium 
                 <ArrowRight size={16} />
               </button>
@@ -341,23 +383,23 @@ export default function LandingPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
             </motion.div>
             
-            <div className="absolute -bottom-10 -left-10 bg-white text-black p-10 hidden md:block shadow-2xl">
-               <Activity className="mb-4" />
-               <span className="text-5xl font-serif italic leading-none">MÉTODO</span>
-               <p className="text-[10px] font-bold uppercase tracking-widest mt-2 opacity-60">Resultados Comprovados</p>
+            <div className="absolute -bottom-6 md:-bottom-10 -left-6 md:-left-10 bg-white text-black p-6 md:p-10 shadow-2xl">
+               <Activity className="mb-2 md:mb-4" size={24} />
+               <span className="text-3xl md:text-5xl font-serif italic leading-none">MÉTODO</span>
+               <p className="text-[8px] md:text-[10px] font-bold uppercase tracking-widest mt-1 md:mt-2 opacity-60">Resultados Comprovados</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Vision 2026 & Benefits Section */}
-      <section className="py-40 px-10 md:px-20 bg-[#0a0a0a] border-t border-white/5">
-        <div className="max-w-7xl mx-auto space-y-32">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-24 items-center">
-            <div className="lg:col-span-5 space-y-12">
+      <section className="py-24 md:py-40 px-6 md:px-20 bg-[#0a0a0a] border-t border-white/5">
+        <div className="max-w-7xl mx-auto space-y-24 md:space-y-32">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-24 items-center">
+            <div className="lg:col-span-5 space-y-8 md:space-y-12">
               <span className="text-[10px] font-bold uppercase tracking-[0.6em] text-white/40 italic">A sua nova era</span>
-              <h3 className="text-6xl md:text-8xl font-serif italic leading-[0.9] tracking-tighter">Corpo Leve, <br /> Postura de <span className="not-italic font-black text-stroke">Poder</span></h3>
-              <p className="text-xl text-white/60 font-serif italic leading-relaxed max-w-sm">
+              <h3 className="text-5xl md:text-8xl font-serif italic leading-[1] md:leading-[0.9] tracking-tighter">Corpo Leve, <br /> Postura de <span className="not-italic font-black text-stroke">Poder</span></h3>
+              <p className="text-lg md:text-xl text-white/60 font-serif italic leading-relaxed max-w-sm">
                 &quot;O ano de 2026 marca a decisão de não apenas existir, mas de ocupar seu espaço com autoridade e vitalidade.&quot;
               </p>
             </div>
@@ -365,7 +407,7 @@ export default function LandingPage() {
               <motion.div 
                  initial={{ y: 100, opacity: 0 }}
                  whileInView={{ y: 0, opacity: 1 }}
-                 className="relative aspect-video lg:aspect-[2/3] w-full max-w-[500px] overflow-hidden rounded-editorial shadow-2xl border border-white/5"
+                 className="relative aspect-[4/5] sm:aspect-video lg:aspect-[2/3] w-full max-w-[500px] overflow-hidden rounded-editorial shadow-2xl border border-white/5"
               >
                 <Image 
                   src="/bem-vindo-2026.jpg" 
@@ -379,7 +421,7 @@ export default function LandingPage() {
           </div>
 
           {/* Benefits Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {[
               { 
                 icon: <Zap className="text-brand-secondary" size={32} />, 
@@ -407,14 +449,14 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className="group p-10 border border-white/5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/10 transition-all rounded-[2rem] space-y-8"
+                className="group p-8 md:p-10 border border-white/5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/10 transition-all rounded-[2rem] space-y-6 md:space-y-8"
               >
-                <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform border border-white/5 shadow-inner">
+                <div className="w-14 md:w-16 h-14 md:h-16 rounded-2xl bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform border border-white/5 shadow-inner">
                   {benefit.icon}
                 </div>
-                <div className="space-y-4">
-                  <h4 className="text-2xl font-serif italic font-bold tracking-tight">{benefit.title}</h4>
-                  <p className="text-sm text-white/40 leading-relaxed font-light">{benefit.desc}</p>
+                <div className="space-y-3 md:space-y-4">
+                  <h4 className="text-xl md:text-2xl font-serif italic font-bold tracking-tight">{benefit.title}</h4>
+                  <p className="text-xs md:text-sm text-white/40 leading-relaxed font-light">{benefit.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -423,34 +465,34 @@ export default function LandingPage() {
       </section>
 
       {/* Final Call to Action Section */}
-      <section className="py-60 px-10 md:px-20 bg-[#0a0a0a] relative overflow-hidden">
+      <section className="py-32 md:py-60 px-6 md:px-20 bg-[#0a0a0a] relative overflow-hidden">
         {/* Background Accent */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl aspect-square bg-[#5c4da7]/10 rounded-full blur-[160px] pointer-events-none" />
         
-        <div className="max-w-4xl mx-auto text-center space-y-16 relative z-10">
+        <div className="max-w-4xl mx-auto text-center space-y-12 md:space-y-16 relative z-10">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            className="space-y-6"
+            className="space-y-4 md:space-y-6"
           >
             <span className="text-[10px] font-bold uppercase tracking-[0.6em] text-brand-secondary italic">Sua hora é agora</span>
-            <h2 className="text-7xl md:text-[10rem] font-serif leading-[0.8] tracking-tighter">Assuma o <br /> <span className="italic font-extralight text-stroke-thick">Controle</span></h2>
+            <h2 className="text-5xl sm:text-6xl md:text-[10rem] font-serif leading-[0.9] md:leading-[0.8] tracking-tighter">Assuma o <br /> <span className="italic font-extralight text-stroke-thick">Controle</span></h2>
           </motion.div>
           
-          <p className="text-xl md:text-2xl font-serif italic text-white/60 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-lg md:text-2xl font-serif italic text-white/60 leading-relaxed max-w-2xl mx-auto px-4">
             Junte-se a centenas de mulheres que decidiram não aceitar nada menos que a excelência em saúde e estética.
           </p>
 
-          <div className="flex flex-col items-center gap-12 pt-10">
-             <button className="group relative">
+          <div className="flex flex-col items-center gap-8 md:gap-12 pt-6 md:pt-10">
+             <button className="group relative w-full sm:w-auto">
                 <div className="absolute inset-0 bg-white blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
-                <div className="relative bg-white text-black px-16 py-8 rounded-full text-xs font-black uppercase tracking-[0.4em] flex items-center gap-6 hover:scale-105 active:scale-95 transition-all">
+                <div className="relative bg-white text-black px-8 md:px-16 py-6 md:py-8 rounded-full text-[10px] md:text-xs font-black uppercase tracking-[0.4em] flex items-center justify-center gap-4 md:gap-6 hover:scale-105 active:scale-95 transition-all">
                   Garantir Acesso Premium
                   <ArrowRight size={20} />
                 </div>
              </button>
              
-             <div className="flex items-center gap-10 opacity-30 text-[9px] font-black uppercase tracking-[0.3em]">
+             <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10 opacity-30 text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em]">
                 <span className="flex items-center gap-2"><ShieldCheck size={14} /> Compra Segura</span>
                 <span className="flex items-center gap-2"><Sparkles size={14} /> Acesso Imediato</span>
                 <span className="flex items-center gap-2"><Activity size={14} /> Garantia de 7 Dias</span>
@@ -460,8 +502,8 @@ export default function LandingPage() {
       </section>
 
       {/* Final Section / Footer Context */}
-      <footer className="py-20 px-10 border-t border-white/5 flex flex-col items-center gap-10">
-        <span className="text-2xl font-serif italic opacity-40">Raphaela Barros</span>
+      <footer className="py-12 md:py-20 px-6 md:px-10 border-t border-white/5 flex flex-col items-center gap-8 md:gap-10">
+        <span className="text-xl md:text-2xl font-serif italic opacity-40">Raphaela Barros</span>
         <div className="flex gap-8 opacity-40">
            <svg
              xmlns="http://www.w3.org/2000/svg"
@@ -481,7 +523,7 @@ export default function LandingPage() {
            </svg>
            <Play size={20} className="hover:opacity-100 cursor-pointer transition-opacity" />
         </div>
-        <p className="text-[9px] font-bold uppercase tracking-[0.4em] opacity-20">© 2026 LPF Studio • Todos os direitos reservados</p>
+        <p className="text-[8px] md:text-[9px] font-bold uppercase tracking-[0.4em] opacity-20 text-center">© 2026 LPF Studio • Todos os direitos reservados</p>
       </footer>
     </div>
   );

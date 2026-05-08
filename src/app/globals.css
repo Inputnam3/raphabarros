@@ -3,31 +3,17 @@
 @theme {
   --font-serif: var(--font-bodoni);
   --font-sans: var(--font-inter);
-
   --color-brand-accent: #ffffff;
-  --color-brand-muted: #666666;
+  --color-brand-secondary: #a3d400;
   --color-brand-bg: #0a0a0a;
-
-  --radius-editorial: 0.5rem; /* Menos arredondado, mais brutal/chique */
+  --radius-editorial: 0.5rem;
 }
 
 @layer utilities {
-  .text-stroke {
-    -webkit-text-stroke: 0.5px rgba(255,255,255,0.4);
-    color: transparent;
-  }
-  .text-stroke-thick {
-    -webkit-text-stroke: 1.5px rgba(255,255,255,0.8);
-    color: transparent;
-  }
-  .glass-dark {
-    background: rgba(10, 10, 10, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-  }
-  .reveal-text {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
-  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .text-stroke { -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2); color: transparent; }
+  .text-stroke-thick { -webkit-text-stroke: 2px rgba(255, 255, 255, 0.3); color: transparent; }
 }
 
 :root {
@@ -46,12 +32,4 @@ h1, h2, h3, .font-serif {
   font-family: var(--font-bodoni), serif;
   font-weight: 300;
   letter-spacing: -0.02em;
-}
-
-/* Hide Scrollbar */
-::-webkit-scrollbar {
-  display: none;
-}
-* {
-  scrollbar-width: none;
 }

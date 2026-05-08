@@ -12,8 +12,7 @@ import {
   LogOut,
   ChevronRight,
   TrendingUp,
-  Clock,
-  Layout
+  Clock
 } from "lucide-react";
 import Link from "next/link";
 
