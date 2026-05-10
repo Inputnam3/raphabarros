@@ -84,7 +84,7 @@ export default function LoginPage() {
           <button className="text-[9px] font-black uppercase tracking-[0.2em] opacity-30 hover:opacity-60 transition-opacity">Esqueci minha senha</button>
           <div className="h-px w-20 bg-white/10" />
           <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
-            Ainda não é aluna? <Link href="/" className="text-white hover:text-[#a3d400] transition-colors ml-2">Conhecer planos</Link>
+            Ainda não é aluna? <Link href="/planos" className="text-white hover:text-[#a3d400] transition-colors ml-2">Conhecer planos</Link>
           </p>
         </div>
       </motion.div>

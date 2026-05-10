@@ -13,6 +13,7 @@
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   .text-stroke { -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2); color: transparent; }
+  .text-stroke-thin { -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.2); color: transparent; }
   .text-stroke-thick { -webkit-text-stroke: 2px rgba(255, 255, 255, 0.3); color: transparent; }
 }
 

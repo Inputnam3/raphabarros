@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Bodoni_Moda, Inter } from "next/font/google";
 import "./globals.css";
+import SmoothScroll from "@/lib/SmoothScroll";
 
 const bodoni = Bodoni_Moda({
   variable: "--font-bodoni",
@@ -56,7 +57,11 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#0a0a0a] text-white font-sans selection:bg-white selection:text-black min-h-screen">
+      <body 
+        className="bg-[#0a0a0a] text-white font-sans selection:bg-white selection:text-black min-h-screen"
+        suppressHydrationWarning
+      >
+        <SmoothScroll />
         {children}
       </body>
     </html>

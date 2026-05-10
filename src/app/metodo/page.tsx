@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useRef } from "react";
+import React from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { Activity, ShieldCheck, Zap, Heart, ArrowLeft } from "lucide-react";
+import { Zap, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function MetodoPage() {
@@ -66,6 +65,18 @@ export default function MetodoPage() {
                </div>
              ))}
           </div>
+        </section>
+
+        {/* Final CTA */}
+        <section className="py-20 text-center space-y-12">
+           <div className="space-y-4">
+              <span className="text-[10px] font-bold uppercase tracking-[0.6em] text-white/40">Sua vez de sentir a diferença</span>
+              <h2 className="text-6xl md:text-8xl font-serif italic tracking-tighter">Pronta para <br /> <span className="not-italic font-black text-stroke">Transformar?</span></h2>
+           </div>
+           <Link href="/planos" className="inline-flex items-center gap-6 bg-white text-black px-12 py-6 rounded-full text-[10px] font-black uppercase tracking-[0.4em] hover:scale-105 transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)]">
+              Ver Planos e Preços
+              <Zap size={18} fill="currentColor" />
+           </Link>
         </section>
       </main>
     </div>

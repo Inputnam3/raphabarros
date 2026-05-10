@@ -76,9 +76,9 @@ export default function ProgramasPage() {
                     <p className="text-xl text-white/40 font-serif italic">{prog.subtitle}</p>
                  </div>
                  <p className="text-lg text-white/60 leading-relaxed font-light max-w-md">{prog.desc}</p>
-                 <button className="bg-white text-black px-12 py-5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-4 hover:scale-105 transition-all">
-                    Explorar Conteúdo <Plus size={16} />
-                 </button>
+                 <Link href="/planos" className="bg-white text-black px-12 py-5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-4 hover:scale-105 transition-all w-fit">
+                    Garantir Acesso <Plus size={16} />
+                 </Link>
               </div>
               <span className="absolute top-10 right-10 text-8xl font-serif italic text-white/[0.03] select-none">{prog.id}</span>
             </motion.div>

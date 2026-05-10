@@ -2,7 +2,6 @@
 
 import React from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { ArrowLeft, TrendingUp, Calendar, Award } from "lucide-react";
 import Link from "next/link";
 
